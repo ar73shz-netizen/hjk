@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>محاسبه‌گر اقساط فروشگاه رسا همراه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-base:#0a1613;
+    --ink:#eef5f2;
+    --ink-soft:#9fb3ad;
+    --ink-faint:#6d8580;
+    --glass:rgba(255,255,255,.055);
+    --glass-strong:rgba(255,255,255,.09);
+    --glass-border:rgba(255,255,255,.12);
+    --glass-border-soft:rgba(255,255,255,.08);
+    --gold:#dcb563;
+    --gold-deep:#c29238;
+    --teal:#3c9484;
+    --teal-deep:#1f6358;
+    --danger:#e07a68;
+    --danger-bg:rgba(224,122,104,.12);
+    --radius-lg:24px;
+    --radius-md:16px;
+    --radius-sm:11px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(760px 480px at 10% -8%, rgba(220,181,99,.16), transparent 58%),
+      radial-gradient(900px 620px at 112% 8%, rgba(60,148,132,.26), transparent 55%),
+      radial-gradient(640px 520px at 50% 115%, rgba(90,70,150,.14), transparent 60%),
+      var(--bg-base);
+    background-attachment:fixed;
+    color:var(--ink);
+    font-family:'Vazirmatn', system-ui, sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    padding-bottom:44px;
+    letter-spacing:.1px;
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:22px 16px 8px;}
+
+  header{
+    display:flex;align-items:center;gap:13px;
+    padding:4px 2px 24px;
+  }
+  .mark{
+    width:56px;height:56px;border-radius:16px;
+    flex-shrink:0;
+    background:linear-gradient(175deg, var(--glass-strong), var(--glass));
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    display:flex;align-items:center;justify-content:center;
+    padding:8px;
+    box-shadow:0 10px 24px -10px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .mark img{
+    width:100%;height:100%;object-fit:contain;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  }
+  header h1{
+    font-size:16.5px;margin:0;font-weight:800;letter-spacing:-.1px;
+    line-height:1.45;
+    background:linear-gradient(90deg,#fff,#cfe4de);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  header p{margin:4px 0 0;font-size:13px;color:var(--ink-soft);font-weight:400;}
+
+  /* ---- Glass card ---- */
+  .card{
+    background:linear-gradient(175deg, var(--glass-strong), var(--glass));
+    backdrop-filter:blur(22px) saturate(150%);
+    -webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid var(--glass-border);
+    border-radius:var(--radius-lg);
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 14px 38px -14px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07);
+  }
+  .card h2{
+    font-size:15px;margin:0 0 15px;
+    color:var(--gold);font-weight:700;
+    display:flex;align-items:center;gap:9px;
+    text-transform:uppercase;letter-spacing:.4px;
+  }
+  .card h2 .num{
+    width:21px;height:21px;border-radius:50%;
+    background:rgba(220,181,99,.16);color:var(--gold);
+    border:1px solid rgba(220,181,99,.35);
+    font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+
+  .field{margin-bottom:13px;}
+  .field:last-child{margin-bottom:0;}
+  label{
+    display:block;font-size:14px;color:var(--ink-soft);
+    margin-bottom:7px;font-weight:500;
+  }
+  .input-row{display:flex;gap:8px;align-items:stretch;}
+  .item-entry{display:flex;flex-direction:column;gap:8px;}
+  .item-entry .item-name{width:100%;flex:none;}
+  .item-entry-bottom{display:grid;grid-template-columns:minmax(0,1fr) 86px 48px;gap:7px;align-items:stretch;}
+  .item-entry-bottom input{min-width:0;}
+  .item-entry-bottom .item-price{width:100%;}
+  .item-percent-wrap{position:relative;}
+  .item-percent-wrap input{width:100%;padding-right:8px;padding-left:25px;text-align:center;}
+  .item-percent-wrap span{position:absolute;left:7px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--ink-soft);pointer-events:none;}
+  .item-entry-bottom .btn-add{padding:8px 12px;}
+
+  /* ---- Glass inputs ---- */
+  input[type=text], input[type=number]{
+    width:100%;
+    background:rgba(255,255,255,.045);
+    border:1.5px solid var(--glass-border-soft);
+    border-radius:var(--radius-sm);
+    padding:12px 13px;
+    font-family:inherit;
+    font-size:16.5px;
+    font-weight:500;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .18s, background .18s, box-shadow .18s;
+    -moz-appearance:textfield;
+    backdrop-filter:blur(8px);
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  input:focus{
+    border-color:rgba(220,181,99,.55);
+    background:rgba(255,255,255,.075);
+    box-shadow:0 0 0 3px rgba(220,181,99,.12);
+  }
+  input::placeholder{color:var(--ink-faint);}
+
+  .suffix-wrap{position:relative;}
+  .suffix-wrap input{padding-left:50px;}
+  .suffix{
+    position:absolute;left:1px;top:1px;bottom:1px;
+    display:flex;align-items:center;padding:0 12px;
+    font-size:11.5px;color:var(--ink-soft);font-weight:500;
+    background:rgba(255,255,255,.04);
+    border-radius:0 9px 9px 0;
+  }
+
+  .item-name{flex:1.4;}
+  .item-price{flex:1;}
+
+  /* ---- Buttons ---- */
+  .btn{
+    border:none;border-radius:var(--radius-sm);
+    font-family:inherit;font-weight:700;font-size:14.5px;
+    cursor:pointer;padding:12px 16px;
+    transition:transform .08s, opacity .15s, box-shadow .15s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-add{
+    background:linear-gradient(150deg,var(--teal),var(--teal-deep));
+    color:#e9fbf6;
+    flex-shrink:0;width:48px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;
+    box-shadow:0 6px 16px -6px rgba(60,148,132,.6);
+  }
+  .btn-primary{
+    width:100%;
+    background:linear-gradient(150deg,var(--gold),var(--gold-deep));
+    color:#221803;
+    padding:15px;font-size:15.5px;
+    border-radius:var(--radius-md);
+    box-shadow:0 12px 26px -10px rgba(220,181,99,.55), inset 0 1px 0 rgba(255,255,255,.45);
+    letter-spacing:.2px;
+  }
+  .btn-primary:disabled{opacity:.5;box-shadow:none;}
+  .btn-outline{
+    width:100%;
+    background:rgba(255,255,255,.05);
+    color:var(--ink);
+    border:1.5px solid var(--glass-border);
+    padding:12.5px;font-size:14.5px;
+    border-radius:var(--radius-md);
+    margin-top:12px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    backdrop-filter:blur(10px);
+  }
+  .btn-gold{
+    background:linear-gradient(150deg,var(--gold),var(--gold-deep));color:#221803;border:none;
+    padding:11px 8px;font-size:13px;border-radius:10px;font-weight:700;
+    flex:1;
+  }
+  .btn-ghost{
+    background:rgba(255,255,255,.07);color:var(--ink-soft);border:1px solid var(--glass-border-soft);
+    padding:11px 8px;font-size:13px;border-radius:10px;font-weight:600;
+    flex:1;
+  }
+  .link-btn{
+    background:none;border:none;color:var(--gold);
+    font-family:inherit;font-size:12.5px;font-weight:600;
+    cursor:pointer;padding:6px 2px 0;display:inline-flex;align-items:center;gap:4px;
+  }
+  .link-btn:active{opacity:.6;}
+
+  /* ---- Mode switch (segmented) ---- */
+  .mode-switch{
+    display:flex;gap:4px;padding:4px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--glass-border-soft);
+    border-radius:14px;margin-bottom:16px;
+  }
+  .mode-btn{
+    flex:1;border:none;background:transparent;color:var(--ink-soft);
+    font-family:inherit;font-size:12.3px;font-weight:600;
+    padding:10px 6px;border-radius:11px;cursor:pointer;
+    transition:background .2s, color .2s;
+    line-height:1.5;
+  }
+  .mode-btn.active{
+    background:linear-gradient(150deg,var(--gold),var(--gold-deep));
+    color:#221803;
+    box-shadow:0 6px 16px -6px rgba(220,181,99,.5);
+  }
+
+  /* ---- Items / cash lists ---- */
+  .items-list{margin-top:13px;display:flex;flex-direction:column;gap:8px;}
+   .item-row{
+    display:flex;align-items:center;justify-content:space-between;
+    background:rgba(255,255,255,.045);border:1px solid var(--glass-border-soft);
+    border-radius:var(--radius-sm);padding:10px 12px;
+    font-size:15px;
+  }
+  .item-row .name{color:var(--ink);font-weight:500;}
+  .item-row .idx{color:var(--ink-faint);font-size:13px;margin-left:6px;}
+  .item-row .right{display:flex;align-items:center;gap:10px;}
+  .item-row .price{font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;direction:ltr;}
+  .item-row .del{
+    background:var(--danger-bg);color:var(--danger);
+    border:none;border-radius:8px;width:27px;height:27px;
+    font-size:14px;line-height:1;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .empty-hint{
+    text-align:center;color:var(--ink-faint);font-size:12.5px;
+    padding:14px 0 2px;
+  }
+
+  .cash-list{display:flex;flex-direction:column;gap:8px;}
+  .cash-row{display:flex;gap:8px;align-items:stretch;}
+  .cash-row .del{
+    background:var(--danger-bg);color:var(--danger);
+    border:none;border-radius:10px;width:46px;flex-shrink:0;
+    font-size:15px;cursor:pointer;
+  }
+  .cash-sum-row{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:10px;padding-top:10px;border-top:1px dashed var(--glass-border-soft);
+    font-size:14px;color:var(--ink-soft);
+  }
+  .cash-sum-row span:last-child{
+    font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;direction:ltr;
+  }
+
+  .total-strip{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:15px;padding-top:15px;border-top:1.5px dashed var(--glass-border-soft);
+  }
+  .total-strip .lbl{font-size:14.5px;color:var(--ink-soft);font-weight:600;}
+  .total-strip .val{font-size:20px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;direction:ltr;}
+
+  .two-col{display:flex;gap:10px;}
+  .two-col .field{flex:1;}
+
+  /* ---- results ---- */
+  .result{display:none;}
+  .result.show{display:block;}
+  .result-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 0;border-bottom:1px solid var(--glass-border-soft);
+    font-size:15px;
+  }
+  .result-row:last-of-type{border-bottom:none;}
+  .result-row .lbl{color:var(--ink-soft);}
+  .result-row .val{font-weight:700;font-variant-numeric:tabular-nums;direction:ltr;color:var(--ink);}
+
+  .highlight{
+    margin-top:8px;
+    background:linear-gradient(150deg, rgba(60,148,132,.9), rgba(31,99,88,.95));
+    border-radius:18px;
+    padding:19px;
+    color:#eafbf6;
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 14px 30px -14px rgba(31,99,88,.7);
+  }
+  .highlight .row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;}
+  .highlight .row + .row{border-top:1px solid rgba(255,255,255,.14);}
+  .highlight .lbl{font-size:14px;opacity:.82;}
+  .highlight .val{font-weight:800;font-size:17px;font-variant-numeric:tabular-nums;direction:ltr;}
+  .highlight .grand{font-size:21px;color:var(--gold);}
+
+  .toman{font-size:12.5px;opacity:.75;margin-right:3px;}
+
+  /* ---------- Modal (invoice image preview) ---------- */
+  .modal-overlay{
+    display:none;
+    position:fixed;inset:0;
+    background:rgba(5,12,11,.68);
+    backdrop-filter:blur(4px);
+    z-index:100;
+    align-items:flex-start;justify-content:center;
+    padding:22px 14px;
+    overflow-y:auto;
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#101e1b;
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:14px;
+    width:100%;max-width:380px;
+    box-shadow:0 24px 60px -14px rgba(0,0,0,.6);
+  }
+  .modal-box .modal-title{
+    font-size:13px;font-weight:700;color:var(--gold);
+    text-align:center;margin:2px 0 12px;
+  }
+  .modal-actions{display:flex;gap:8px;margin-top:12px;}
+  .choice-list{display:flex;flex-direction:column;gap:10px;}
+  .btn-choice{
+    width:100%;text-align:center;
+    background:linear-gradient(150deg,var(--gold),var(--gold-deep));
+    color:#221803;border:none;
+    padding:14px;font-size:14.5px;border-radius:12px;font-weight:700;
+  }
+  .snap-preview{width:100%;border-radius:12px;display:block;border:1px solid var(--glass-border);}
+  .snap-loading{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;padding:40px 10px;color:var(--ink-soft);font-size:13px;
+  }
+  .spinner{
+    width:26px;height:26px;border-radius:50%;
+    border:3px solid var(--glass-border);border-top-color:var(--gold);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="mark"><img src="img/logo-inner.png" alt="رسا همراه"></div>
+    <div>
+      <h1>محاسبه‌گر اقساط فروشگاه رسا همراه</h1>
+      <p>محاسبه دقیق مبالغ، سود و قسط ماهانه</p>
+    </div>
+  </header>
+
+  <!-- Step 1: amounts -->
+  <div class="card">
+    <h2><span class="num">۱</span> مبالغ</h2>
+
+    <div class="field">
+      <label>افزودن مبلغ</label>
+      <div class="item-entry">
+        <input type="text" id="itemName" class="item-name" placeholder="نام کالا (اختیاری)">
+        <div class="item-entry-bottom">
+          <input type="text" id="itemPrice" class="item-price" placeholder="مبلغ (تومان)" inputmode="numeric">
+          <div class="item-percent-wrap"><input type="number" id="itemPercent" value="" min="0" step="0.1" inputmode="decimal" aria-label="درصد نقدی" placeholder="٪"><span>٪</span></div>
+          <button type="button" class="btn btn-add" id="addBtn" title="افزودن">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="items-list" id="itemsList"></div>
+    <div class="empty-hint" id="emptyHint">هنوز مبلغی اضافه نشده است</div>
+
+    <div class="total-strip">
+      <span class="lbl">جمع کل مبالغ</span>
+      <span class="val"><span id="itemsTotal">۰</span><span class="toman">تومان</span></span>
+    </div>
+  </div>
+
+  <!-- Step 2: payment info -->
+  <div class="card">
+    <h2><span class="num">۲</span> اطلاعات پرداخت</h2>
+
+    <div class="mode-switch">
+      <button type="button" class="mode-btn active" data-mode="cash">محاسبه بر اساس نقدی</button>
+      <button type="button" class="mode-btn" data-mode="installment">محاسبه بر اساس مبلغ قسط</button>
+    </div>
+
+    <!-- cash mode field -->
+    <div class="field" id="cashField">
+      <label>مبلغ پرداخت نقدی (تومان)</label>
+      <div class="cash-list" id="cashList"></div>
+      <button type="button" class="link-btn" id="addCashBtn">＋ افزودن مبلغ دیگر</button>
+      <div class="cash-sum-row" id="cashSumRow" style="display:none;">
+        <span>جمع پرداخت نقدی</span>
+        <span id="cashSumVal">۰</span>
+      </div>
+    </div>
+
+    <!-- installment mode field -->
+    <div class="field" id="monthlyField" style="display:none;">
+      <label>مبلغ هر قسط (تومان)</label>
+      <input type="text" id="monthlyAmount" placeholder="مبلغی که مشتری هر ماه می‌پردازد" inputmode="numeric">
+    </div>
+
+    <div class="two-col">
+      <div class="field">
+        <label>سود اقساط</label>
+        <div class="suffix-wrap">
+          <input type="number" id="interestRate" value="4" inputmode="decimal">
+          <span class="suffix">٪ در ماه</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>تعداد اقساط</label>
+        <input type="number" id="months" placeholder="مثلاً ۶" inputmode="numeric">
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" id="calcBtn">محاسبه اقساط</button>
+
+  <!-- Results -->
+  <div class="card result" id="resultCard">
+    <h2><span class="num">۳</span> نتیجه محاسبه</h2>
+
+    <div id="resultItems" class="result-items" style="margin:10px 0 14px;padding:10px 12px;border:1px solid var(--glass-border-soft);border-radius:12px;display:none;"></div>
+    <div class="result-row">
+      <span class="lbl">جمع کل مبالغ</span>
+      <span class="val" id="rTotal">۰</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">پرداخت نقدی</span>
+      <span class="val" id="rCash">۰</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">مانده</span>
+      <span class="val" id="rRemain">۰</span>
+    </div>
+    <div class="result-row">
+      <span class="lbl">جمع سود</span>
+      <span class="val" id="rSumSood">۰</span>
+    </div>
+
+    <div class="highlight">
+      <div class="row">
+        <span class="lbl">تفاوت اقساط</span>
+        <span class="val" id="hInterest">۰</span>
+      </div>
+      <div class="row">
+        <span class="lbl">مبلغ هر قسط</span>
+        <span class="val" id="hMonthly">۰</span>
+      </div>
+      <div class="row">
+        <span class="lbl">جمع نقد و اقساط</span>
+        <span class="val grand" id="hGrand">۰</span>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" id="shareCalcBtn">🔗 اشتراک‌گذاری محاسبه</button>
+  </div>
+
+</div>
+
+<!-- Modal: choose text or image -->
+<div class="modal-overlay" id="choiceModal">
+  <div class="modal-box">
+    <div class="modal-title">اشتراک‌گذاری محاسبه</div>
+    <div class="choice-list">
+      <button class="btn btn-choice" id="shareTextBtn">📄 اشتراک‌گذاری متن</button>
+      <button class="btn btn-choice" id="shareImageBtn">🖼 اشتراک‌گذاری عکس</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeChoiceBtn" style="width:100%;">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: shows the generated result image -->
+<div class="modal-overlay" id="imageModal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">در حال ساخت تصویر…</div>
+
+    <div id="snapLoading" class="snap-loading">
+      <div class="spinner"></div>
+      <span>چند لحظه صبر کنید…</span>
+    </div>
+
+    <img id="snapImg" class="snap-preview" style="display:none;">
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="closeModalBtn">بستن</button>
+      <button class="btn btn-gold" id="shareImgBtn" style="display:none;">اشتراک‌گذاری</button>
+      <button class="btn btn-gold" id="downloadImgBtn" style="display:none;">ذخیره</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let items = [];
+  let lastResult = null;
+  let mode = 'cash'; // 'cash' | 'installment'
+  let cashRowId = 1;
+  let cashRows = [1]; // list of row ids, first one has no remove button
+
+  const fa = new Intl.NumberFormat('fa-IR');
+  const faPercent = new Intl.NumberFormat('fa-IR', {maximumFractionDigits:2});
+
+  function fmt(n){
+    if(isNaN(n)) n = 0;
+    n = Math.round(n);
+    return fa.format(n);
+  }
+  function ceilToThousand(n){
+    const value = Number(n);
+    if (!Number.isFinite(value) || value <= 0) return 0;
+    return Math.ceil(value / 1000) * 1000;
+  }
+  function toEnglishDigits(str){
+    const map = {'۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9','٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9'};
+    return String(str).replace(/[۰-۹٠-٩]/g, d => map[d]);
+  }
+  function numFromEl(el){
+    if(!el) return 0;
+    const v = parseFloat(toEnglishDigits(el.value).replace(/,/g,''));
+    return isNaN(v) ? 0 : v;
+  }
+  function num(id){ return numFromEl(document.getElementById(id)); }
+  function escapeHtml(value){ return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
+  /* ---------------- live thousand-separator formatting ---------------- */
+  function formatThousands(el){
+    const digits = toEnglishDigits(el.value).replace(/[^\d]/g,'');
+    if(digits === ''){ el.value = ''; return; }
+    el.value = Number(digits).toLocaleString('en-US');
+  }
+
+  /* ---------------- Items ---------------- */
+  const itemsListEl = document.getElementById('itemsList');
+  const emptyHint = document.getElementById('emptyHint');
+  const itemsTotalEl = document.getElementById('itemsTotal');
+  const nameInput = document.getElementById('itemName');
+  const priceInput = document.getElementById('itemPrice');
+  const percentInput = document.getElementById('itemPercent');
+
+  priceInput.addEventListener('input', ()=> formatThousands(priceInput));
+
+  function renderItems(){
+    itemsListEl.innerHTML = '';
+    emptyHint.style.display = items.length ? 'none' : 'block';
+    items.forEach((it, i) => {
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.innerHTML = `
+        <span class="name"><span class="idx">${fa.format(i+1)}.</span>${it.name}</span>
+        <span class="right">
+          <span class="price">${fmt(it.price)}</span>
+          <button class="del" data-i="${i}">×</button>
+        </span>`;
+      itemsListEl.appendChild(row);
+    });
+    itemsListEl.querySelectorAll('.del').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const i = parseInt(e.currentTarget.dataset.i, 10);
+        items.splice(i,1);
+        renderItems();
+        hideResult();
+      });
+    });
+    const total = items.reduce((s,it)=> s + it.price, 0);
+    itemsTotalEl.textContent = fmt(total);
+    return total;
+  }
+
+  function addItem(){
+    const priceVal = parseFloat(toEnglishDigits(priceInput.value).replace(/,/g,''));
+    if(!priceVal || priceVal <= 0){
+      priceInput.focus();
+      priceInput.style.borderColor = 'var(--danger)';
+      setTimeout(()=> priceInput.style.borderColor = '', 700);
+      return;
+    }
+    const name = nameInput.value.trim() || `کالای شماره ${fa.format(items.length+1)}`;
+    const percent = Math.max(0, numFromEl(percentInput));
+    // Apply the entered percentage. Round upward to the next 1,000 toman; exact thousands stay unchanged.
+    const adjustedRaw = priceVal * (1 + percent / 100);
+    const adjustedPrice = ceilToThousand(adjustedRaw);
+    items.push({name, price: adjustedPrice});
+    nameInput.value = '';
+    priceInput.value = '';
+    percentInput.value = '';
+    nameInput.focus();
+    renderItems();
+    hideResult();
+  }
+
+  document.getElementById('addBtn').addEventListener('click', addItem);
+  priceInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') addItem(); });
+  nameInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') priceInput.focus(); });
+
+  /* ---------------- Cash entries (multi) ---------------- */
+  const cashListEl = document.getElementById('cashList');
+  const cashSumRow = document.getElementById('cashSumRow');
+  const cashSumVal = document.getElementById('cashSumVal');
+
+  function renderCash(){
+    cashListEl.innerHTML = '';
+    cashRows.forEach((id, idx) => {
+      const row = document.createElement('div');
+      row.className = 'cash-row';
+      row.innerHTML = idx === 0
+        ? `<input type="text" class="cash-input" data-id="${id}" placeholder="۰" inputmode="numeric">`
+        : `<input type="text" class="cash-input" data-id="${id}" placeholder="مبلغ دیگر" inputmode="numeric">
+           <button type="button" class="del" data-id="${id}">×</button>`;
+      cashListEl.appendChild(row);
+    });
+    cashListEl.querySelectorAll('.del').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const id = parseInt(e.currentTarget.dataset.id, 10);
+        cashRows = cashRows.filter(r => r !== id);
+        renderCash();
+        hideResult();
+      });
+    });
+    cashListEl.querySelectorAll('.cash-input').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ formatThousands(inp); updateCashSum(); hideResult(); });
+    });
+    updateCashSum();
+  }
+
+  function updateCashSum(){
+    const inputs = cashListEl.querySelectorAll('.cash-input');
+    const sum = Array.from(inputs).reduce((s, el)=> s + numFromEl(el), 0);
+    cashSumRow.style.display = inputs.length > 1 ? 'flex' : 'none';
+    cashSumVal.textContent = fmt(sum) + ' تومان';
+    return sum;
+  }
+
+  function sumCash(){
+    const inputs = cashListEl.querySelectorAll('.cash-input');
+    return Array.from(inputs).reduce((s, el)=> s + numFromEl(el), 0);
+  }
+
+  document.getElementById('addCashBtn').addEventListener('click', ()=>{
+    cashRowId += 1;
+    cashRows.push(cashRowId);
+    renderCash();
+  });
+
+  /* ---------------- installment-amount field formatting ---------------- */
+  const monthlyAmountInput = document.getElementById('monthlyAmount');
+  monthlyAmountInput.addEventListener('input', ()=> formatThousands(monthlyAmountInput));
+
+  /* ---------------- Mode switch ---------------- */
+  const cashField = document.getElementById('cashField');
+  const monthlyField = document.getElementById('monthlyField');
+  document.querySelectorAll('.mode-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.mode-btn').forEach(b=> b.classList.remove('active'));
+      btn.classList.add('active');
+      mode = btn.dataset.mode;
+      if(mode === 'cash'){
+        cashField.style.display = 'block';
+        monthlyField.style.display = 'none';
+      } else {
+        cashField.style.display = 'none';
+        monthlyField.style.display = 'block';
+      }
+      hideResult();
+    });
+  });
+
+  /* ---------------- Calculation ---------------- */
+  const resultCard = document.getElementById('resultCard');
+  function hideResult(){ resultCard.classList.remove('show'); lastResult = null; }
+
+  document.getElementById('calcBtn').addEventListener('click', ()=>{
+    const total = items.reduce((s,it)=> s + it.price, 0);
+    const rate = num('interestRate');
+    const months = num('months');
+
+    if(total <= 0){
+      alert('حداقل یک مبلغ اضافه کنید.');
+      return;
+    }
+    if(months <= 0){
+      alert('تعداد اقساط را وارد کنید.');
+      document.getElementById('months').focus();
+      return;
+    }
+
+    const sumSood = months * rate; // جمع سود (درصد)
+    let cash, remain, totalInterest, monthly;
+
+    if(mode === 'cash'){
+      cash = sumCash();
+      if(cash > total){
+        alert('مبلغ پرداخت نقدی نمی‌تواند از جمع کل مبالغ کالاها بیشتر باشد.');
+        return;
+      }
+      remain = Math.max(total - cash, 0);
+      totalInterest = remain * (sumSood / 100);       // تفاوت اقساط = مانده × جمع سود
+      monthly = ceilToThousand((remain + totalInterest) / months); // گرد کردن مبلغ قسط به هزار تومان بالاتر
+    } else {
+      monthly = ceilToThousand(num('monthlyAmount'));
+      if(monthly <= 0){
+        alert('مبلغ هر قسط را وارد کنید.');
+        document.getElementById('monthlyAmount').focus();
+        return;
+      }
+      remain = (monthly * months) / (1 + sumSood/100);
+      if(remain > total){
+        alert('مبلغ قسط وارد شده نسبت به جمع کل مبالغ زیاد است؛ لطفاً مقدار کمتری وارد کنید.');
+        return;
+      }
+      totalInterest = remain * (sumSood / 100);
+      cash = total - remain;
+    }
+
+    // یکسان‌سازی گرد کردن مبلغ قسط در هر دو روش محاسبه
+    monthly = ceilToThousand(monthly);
+
+    const grand = total + totalInterest; // جمع نقد و اقساط
+
+    document.getElementById('rTotal').textContent = fmt(total) + ' تومان';
+    document.getElementById('rCash').textContent = fmt(cash) + ' تومان';
+    document.getElementById('rRemain').textContent = fmt(remain) + ' تومان';
+    document.getElementById('rSumSood').textContent = faPercent.format(sumSood) + '٪';
+
+    document.getElementById('hInterest').textContent = fmt(totalInterest) + ' تومان';
+    document.getElementById('hMonthly').textContent = fmt(monthly) + ' تومان';
+    document.getElementById('hGrand').textContent = fmt(grand) + ' تومان';
+
+    const resultItemsEl = document.getElementById('resultItems');
+    resultItemsEl.innerHTML = '<div style="font-weight:800;margin-bottom:8px;color:var(--gold);">اقلام محاسبه‌شده</div>' + items.map((it, i) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--glass-border-soft);"><span>${fa.format(i+1)}. ${escapeHtml(it.name)}</span><strong style="white-space:nowrap;">${fmt(it.price)} تومان</strong></div>`).join('');
+    resultItemsEl.style.display = 'block';
+
+    lastResult = {total, cash, remain, months, rate, sumSood, totalInterest, monthly, grand, items: items.map(it => ({name: it.name, price: it.price}))};
+
+    resultCard.classList.add('show');
+    resultCard.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  /* ---------------- Plain-text sharing ---------------- */
+  function buildShareText(r){
+    return [
+      'محاسبه‌گر اقساط فروشگاه رسا همراه',
+      '——————————',
+      'اقلام و مبالغ:',
+      ...(r.items || []).map((it, i) => `${fa.format(i+1)}. ${it.name}: ${fmt(it.price)} تومان`),
+      `جمع کل مبالغ: ${fmt(r.total)} تومان`,
+      `مبلغ پرداخت نقدی: ${fmt(r.cash)} تومان`,
+      `مانده: ${fmt(r.remain)} تومان`,
+      `تفاوت اقساط: ${fmt(r.totalInterest)} تومان`,
+      `مبلغ هر قسط: ${fmt(r.monthly)} تومان`,
+      `تعداد اقساط: ${fa.format(r.months)}`,
+      `جمع نقد و اقساط: ${fmt(r.grand)} تومان`,
+      '——————————',
+      'رسا همراه'
+    ].join('\n');
+  }
+
+  async function shareAsText(){
+    const text = buildShareText(lastResult);
+    if(window.AndroidShare && typeof window.AndroidShare.shareText === 'function'){
+      try{ window.AndroidShare.shareText(text); return; }catch(e){}
+    }
+    if(navigator.share){
+      try{ await navigator.share({ title: 'نتیجه محاسبه اقساط', text }); }
+      catch(e){ /* cancelled */ }
+      return;
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try{
+        await navigator.clipboard.writeText(text);
+        alert('متن محاسبه در کلیپ‌بورد کپی شد.');
+      }catch(e){
+        alert('امکان اشتراک‌گذاری در این دستگاه وجود ندارد.');
+      }
+      return;
+    }
+    alert('امکان اشتراک‌گذاری در این دستگاه وجود ندارد.');
+  }
+
+  /* ---------------- Result image generation (canvas) ---------------- */
+  // Mirrors the on-screen "نتیجه محاسبه" card look — no جمع سود row.
+  function roundRect(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  async function generateResultImage(r){
+    try{
+      await document.fonts.load('900 48px Vazirmatn');
+      await document.fonts.load('700 34px Vazirmatn');
+      await document.fonts.ready;
+    }catch(e){ /* fonts may still work with fallback */ }
+
+    const W = 600;
+    const PAD = 30;       // outer canvas padding
+    const cardPad = 30;   // inner card padding
+    const gap = 24;
+    const rowH = 88;
+    const rowsCount = 3;        // جمع کل مبالغ، مبلغ پرداخت نقدی، مانده
+    const itemRows = (r.items || []).length;
+    const itemRowH = 76;
+    const itemsBlockH = itemRows ? 88 + itemRows * itemRowH : 0;
+    const highlightRowH = 88;
+    const highlightRows = 3;    // تفاوت اقساط، مبلغ هر قسط، جمع نقد و اقساط
+    const highlightPad = 22;
+    const headH = 190;
+    const footerH = 66;
+
+    const highlightH = highlightPad * 2 + highlightRows * highlightRowH;
+    const cardH = cardPad * 2 + headH + itemsBlockH + rowsCount * rowH + gap + highlightH + gap + footerH;
+    const H = PAD * 2 + cardH;
+
+    const scale = 3;
+    const canvas = document.createElement('canvas');
+    canvas.width = W * scale;
+    canvas.height = H * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+    ctx.textBaseline = 'alphabetic';
+
+    // background (matches app's dark theme)
+    const bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#0d1b17');
+    bg.addColorStop(1, '#0a1613');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const glow1 = ctx.createRadialGradient(W * 0.1, 0, 0, W * 0.1, 0, 420);
+    glow1.addColorStop(0, 'rgba(220,181,99,.16)');
+    glow1.addColorStop(1, 'rgba(220,181,99,0)');
+    ctx.fillStyle = glow1; ctx.fillRect(0, 0, W, H);
+
+    const glow2 = ctx.createRadialGradient(W * 1.05, H * 0.1, 0, W * 1.05, H * 0.1, 460);
+    glow2.addColorStop(0, 'rgba(60,148,132,.22)');
+    glow2.addColorStop(1, 'rgba(60,148,132,0)');
+    ctx.fillStyle = glow2; ctx.fillRect(0, 0, W, H);
+
+    // glass card
+    const cardX = PAD, cardY = PAD, cardW = W - PAD * 2;
+    roundRect(ctx, cardX, cardY, cardW, cardH, 22);
+    ctx.fillStyle = 'rgba(255,255,255,.055)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.14)';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    const innerX = cardX + cardPad, innerW = cardW - cardPad * 2;
+    const cx = W / 2;
+    let y = cardY + cardPad;
+
+    // brand + title
+    ctx.direction = 'rtl'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#dcb563';
+    ctx.font = '900 38px Vazirmatn, sans-serif';
+    ctx.fillText('رسا همراه', cx, y + 34);
+    y += 58;
+
+    ctx.fillStyle = '#eef5f2';
+    ctx.font = '800 29px Vazirmatn, sans-serif';
+    ctx.fillText('نتیجه محاسبه اقساط', cx, y + 30);
+    y += 52;
+
+    ctx.strokeStyle = 'rgba(255,255,255,.16)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx - 95, y + 3); ctx.lineTo(cx + 95, y + 3); ctx.stroke();
+    ctx.fillStyle = '#9fb3ad';
+    ctx.font = '500 24px Vazirmatn, sans-serif';
+    ctx.fillText(new Date().toLocaleDateString('fa-IR'), cx, y + 34);
+    y += headH - 30;
+
+    function drawMoney(value, x, baseline, maxWidth, fontSize, color){
+      const numberText = fmt(value);
+      ctx.direction = 'ltr'; ctx.textAlign = 'left'; ctx.fillStyle = color;
+      ctx.font = `800 ${fontSize}px Vazirmatn, sans-serif`;
+      const numberWidth = ctx.measureText(numberText).width;
+      const unitSize = Math.max(12, Math.round(fontSize * .62));
+      ctx.fillText(numberText, x, baseline, Math.max(20, maxWidth - unitSize * 2));
+      ctx.font = `600 ${unitSize}px Vazirmatn, sans-serif`;
+      ctx.fillText('تومان', x + Math.min(numberWidth, maxWidth - unitSize * 2) + 5, baseline);
+    }
+
+    // item breakdown, included in the shared image
+    if (itemRows) {
+      ctx.direction = 'rtl'; ctx.textAlign = 'right';
+      ctx.fillStyle = '#dcb563'; ctx.font = '800 30px Vazirmatn, sans-serif';
+      ctx.fillText('اقلام و مبالغ', innerX + innerW, y + 15);
+      y += 44; // فاصله عنوان اقلام تا ردیف اول
+      (r.items || []).forEach((it, i) => {
+        ctx.strokeStyle = 'rgba(255,255,255,.08)'; ctx.beginPath(); ctx.moveTo(innerX, y + itemRowH - 3); ctx.lineTo(innerX + innerW, y + itemRowH - 3); ctx.stroke();
+        ctx.direction = 'rtl'; ctx.textAlign = 'right'; ctx.fillStyle = '#9fb3ad'; ctx.font = '700 27px Vazirmatn, sans-serif';
+        ctx.fillText(`${fa.format(i+1)}. ${it.name}`, innerX + innerW, y + 17, innerW * .57);
+        drawMoney(it.price, innerX, y + 17, innerW * .4, 27, '#eef5f2');
+        y += itemRowH;
+      });
+      y += 44; // فاصله واضح بین آخرین قلم و خلاصه مبالغ
+    }
+
+    // summary rows
+    function row(label, value){
+      ctx.strokeStyle = 'rgba(255,255,255,.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(innerX, y + rowH); ctx.lineTo(innerX + innerW, y + rowH); ctx.stroke();
+
+      ctx.direction = 'rtl'; ctx.textAlign = 'right';
+      ctx.fillStyle = '#9fb3ad';
+      ctx.font = '700 27px Vazirmatn, sans-serif';
+      ctx.fillText(label, innerX + innerW, y + rowH / 2 + 5);
+
+      ctx.direction = 'ltr'; ctx.textAlign = 'left';
+      ctx.fillStyle = '#eef5f2';
+      const rowAmount = String(value).replace(/\s*تومان$/, '');
+      ctx.font = '800 27px Vazirmatn, sans-serif';
+      const rowNumberWidth = ctx.measureText(rowAmount).width;
+      ctx.fillText(rowAmount, innerX, y + rowH / 2 + 5);
+      ctx.font = '600 16px Vazirmatn, sans-serif';
+      ctx.fillText('تومان', innerX + rowNumberWidth + 5, y + rowH / 2 + 5);
+
+      y += rowH;
+    }
+
+    row('جمع کل مبالغ', fmt(r.total) + ' تومان');
+    row('مبلغ پرداخت نقدی', fmt(r.cash) + ' تومان');
+    row('مانده', fmt(r.remain) + ' تومان');
+
+    y += gap;
+
+    // highlight box (teal gradient, like .highlight in the app)
+    const hlGrad = ctx.createLinearGradient(innerX, y, innerX + innerW, y + highlightH);
+    hlGrad.addColorStop(0, 'rgba(60,148,132,.95)');
+    hlGrad.addColorStop(1, 'rgba(31,99,88,.98)');
+    roundRect(ctx, innerX, y, innerW, highlightH, 16);
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    let hy = y + highlightPad;
+    function hlRow(label, value, big){
+      if (big) {
+        ctx.strokeStyle = 'rgba(255,255,255,.18)';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(innerX + 14, hy); ctx.lineTo(innerX + innerW - 14, hy); ctx.stroke();
+      }
+      const fontSize = big ? 32 : 26;
+      ctx.direction = 'rtl'; ctx.textAlign = 'right';
+      ctx.fillStyle = big ? '#dcb563' : '#eafbf6';
+      ctx.font = `${big ? '800' : '700'} ${fontSize}px Vazirmatn, sans-serif`;
+      ctx.globalAlpha = big ? 1 : .92;
+      ctx.fillText(label, innerX + innerW - 14, hy + highlightRowH / 2 + (big ? 6 : 5));
+
+      ctx.direction = 'ltr'; ctx.textAlign = 'left';
+      ctx.fillStyle = big ? '#dcb563' : '#ffffff';
+      const amountText = String(value).replace(/\s*تومان$/, '');
+      ctx.font = `800 ${fontSize}px Vazirmatn, sans-serif`;
+      const amountWidth = ctx.measureText(amountText).width;
+      ctx.fillText(amountText, innerX + 14, hy + highlightRowH / 2 + (big ? 6 : 5));
+      ctx.font = `600 ${Math.max(13, Math.round(fontSize * .62))}px Vazirmatn, sans-serif`;
+      ctx.fillText('تومان', innerX + 14 + amountWidth + 5, hy + highlightRowH / 2 + (big ? 6 : 5));
+      ctx.globalAlpha = 1;
+
+      hy += highlightRowH;
+    }
+
+    hlRow('تفاوت اقساط', fmt(r.totalInterest) + ' تومان');
+    hlRow('مبلغ هر قسط', fmt(r.monthly) + ' تومان');
+    hlRow('جمع نقد و اقساط', fmt(r.grand) + ' تومان', true);
+
+    y += highlightH + gap;
+
+    // footer
+    ctx.strokeStyle = 'rgba(255,255,255,.1)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(innerX, y); ctx.lineTo(innerX + innerW, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.direction = 'rtl'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#dcb563';
+    ctx.font = '800 27px Vazirmatn, sans-serif';
+    ctx.fillText('رسا همراه', cx, y + 26);
+
+    return canvas;
+  }
+
+  function canvasToBlob(canvas){
+    return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+  }
+
+  async function shareAsImage(){
+    resetModal();
+    imageModal.classList.add('show');
+
+    await new Promise(r => requestAnimationFrame(r));
+
+    try{
+      const canvas = await generateResultImage(lastResult);
+      const blob = await canvasToBlob(canvas);
+      currentImgUrl = URL.createObjectURL(blob);
+      currentImgFile = new File([blob], 'محاسبه-اقساط-رسا-همراه.png', { type: 'image/png' });
+
+      snapLoading.style.display = 'none';
+      snapImg.src = currentImgUrl;
+      snapImg.style.display = 'block';
+      downloadBtn.style.display = 'block';
+      modalTitle.textContent = 'تصویر محاسبه';
+
+      // Native Android bridge supports sharing files from the bundled WebView.
+      if ((window.AndroidShare && typeof window.AndroidShare.shareImage === 'function') ||
+          (navigator.share && navigator.canShare && navigator.canShare({ files: [currentImgFile] }))) {
+        shareBtn.style.display = 'block';
+      }
+    }catch(err){
+      snapLoading.style.display = 'none';
+      modalTitle.textContent = 'خطا در ساخت تصویر';
+    }
+  }
+
+  /* ---------------- Modals wiring ---------------- */
+  const choiceModal = document.getElementById('choiceModal');
+  const imageModal = document.getElementById('imageModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const snapLoading = document.getElementById('snapLoading');
+  const snapImg = document.getElementById('snapImg');
+  const downloadBtn = document.getElementById('downloadImgBtn');
+  const shareBtn = document.getElementById('shareImgBtn');
+  const closeBtn = document.getElementById('closeModalBtn');
+
+  let currentImgUrl = null;
+  let currentImgFile = null;
+
+  function resetModal(){
+    snapLoading.style.display = 'flex';
+    snapImg.style.display = 'none';
+    downloadBtn.style.display = 'none';
+    shareBtn.style.display = 'none';
+    modalTitle.textContent = 'در حال ساخت تصویر…';
+    if (currentImgUrl) { URL.revokeObjectURL(currentImgUrl); currentImgUrl = null; }
+    currentImgFile = null;
+  }
+
+  document.getElementById('shareCalcBtn').addEventListener('click', ()=>{
+    if(!lastResult){
+      alert('ابتدا محاسبه اقساط را انجام دهید.');
+      return;
+    }
+    choiceModal.classList.add('show');
+  });
+
+  document.getElementById('closeChoiceBtn').addEventListener('click', ()=>{
+    choiceModal.classList.remove('show');
+  });
+  choiceModal.addEventListener('click', (e)=>{
+    if(e.target === choiceModal) choiceModal.classList.remove('show');
+  });
+
+  document.getElementById('shareTextBtn').addEventListener('click', ()=>{
+    choiceModal.classList.remove('show');
+    shareAsText();
+  });
+
+  document.getElementById('shareImageBtn').addEventListener('click', ()=>{
+    choiceModal.classList.remove('show');
+    shareAsImage();
+  });
+
+  shareBtn.addEventListener('click', async ()=>{
+    if(!currentImgFile) return;
+    try{
+      if(window.AndroidShare && typeof window.AndroidShare.shareImage === 'function'){
+        const canvas = await generateResultImage(lastResult);
+        window.AndroidShare.shareImage(canvas.toDataURL('image/png'));
+        return;
+      }
+      if(navigator.share && navigator.canShare && navigator.canShare({ files: [currentImgFile] })){
+        await navigator.share({ files: [currentImgFile], title: 'نتیجه محاسبه اقساط', text: 'رسا همراه' });
+        return;
+      }
+      // Browser fallback: download the image so it can be attached manually.
+      if(currentImgUrl){ const a=document.createElement('a'); a.href=currentImgUrl; a.download='محاسبه-اقساط-رسا-همراه.png'; a.click(); alert('تصویر ذخیره شد؛ آن را از گالری در شبکه اجتماعی دلخواه ارسال کنید.'); }
+    }catch(e){ alert('اشتراک‌گذاری انجام نشد. لطفاً تصویر را ذخیره و از گالری ارسال کنید.'); }
+  });
+
+  downloadBtn.addEventListener('click', async ()=>{
+    if(!currentImgFile) return;
+    try{
+      if(window.AndroidSave && typeof window.AndroidSave.saveImage === 'function'){
+        const canvas = await generateResultImage(lastResult);
+        window.AndroidSave.saveImage(canvas.toDataURL('image/png'));
+        return;
+      }
+      if(currentImgUrl){
+        const a = document.createElement('a'); a.href=currentImgUrl;
+        a.download='محاسبه-اقساط-رسا-همراه.png';
+        document.body.appendChild(a); a.click(); a.remove();
+        alert('درخواست ذخیره تصویر انجام شد. در صورت نمایش دانلود، فایل را در گالری ذخیره کنید.');
+      }
+    }catch(e){ alert('ذخیره تصویر ناموفق بود.'); }
+  });
+
+  closeBtn.addEventListener('click', ()=>{
+    imageModal.classList.remove('show');
+  });
+  imageModal.addEventListener('click', (e)=>{
+    if(e.target === imageModal) imageModal.classList.remove('show');
+  });
+
+  renderItems();
+  renderCash();
+})();
+</script>
+</body>
+</html>
